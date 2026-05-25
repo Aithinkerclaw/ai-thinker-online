@@ -1,0 +1,16 @@
+# 依赖
+node_modules/
+
+# 任务文件
+task-*.xml
+task-*.ps1
+task-*.bat
+
+# 脚本生成器
+generate.js
+generate-mp.ps1
+package.json
+package-lock.json
+
+# 其他项目文件
+ai-thinker-generator.html
