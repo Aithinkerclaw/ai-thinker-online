@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI猩客实验室 - AI工具平台</title>
+<style>
+:root{
+  --bg-primary:#0d1117;
+  --bg-secondary:#161b22;
+  --bg-tertiary:#21262d;
+  --bg-hover:#30363d;
+  --border-color:#30363d;
+  --text-primary:#e6edf3;
+  --text-secondary:#8b949e;
+  --text-tertiary:#6e7681;
+  --accent-blue:#58a6ff;
+  --accent-green:#3fb950;
+  --accent-purple:#a371f7;
+  --accent-orange:#d29922;
+  --accent-red:#f85149;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-serif;background:var(--bg-primary);color:var(--text-primary);height:100vh;display:flex;overflow:hidden}
+/* Sidebar */
+.sidebar{width:240px;background:var(--bg-secondary);border-right:1px solid var(--border-color);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:16px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0}
+.logo-icon img{width:100%;height:100%;object-fit:contain}
+.logo-text{font-size:16px;font-weight:600;letter-spacing:-0.5px}
+.logo-sub{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.nav-section{padding:12px 0}
+.nav-label{font-size:11px;color:var(--text-tertiary);text-transform:uppercase;padding:4px 16px;font-weight:500;letter-spacing:0.5px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13.5px;color:var(--text-secondary);transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.nav-item.active{background:rgba(88,166,255,.08);color:var(--accent-blue);border-left-color:var(--accent-blue)}
+.nav-item .icon{width:18px;height:18px;text-align:center;font-size:16px;flex-shrink:0}
+/* Assistant */
+.sidebar-bottom{margin-top:auto;padding:16px;border-top:1px solid var(--border-color)}
+.assistant-card{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:var(--bg-tertiary)}
+.assist-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3fb950,#58a6ff);display:flex;align-items:center;justify-content:center;font-size:14px}
+.assist-info{flex:1}
+.assist-name{font-size:13px;font-weight:500}
+.assist-status{font-size:11px;color:var(--text-tertiary)}
+/* Claw assistant (龙虾OpenClaw) */
+.claw-card{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:var(--bg-tertiary)}
+.claw-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#d29922,#f85149);display:flex;align-items:center;justify-content:center;font-size:14px}
+.claw-info{flex:1}
+.claw-name{font-size:13px;font-weight:500}
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:52px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-badge{font-size:11px;background:rgba(63,185,80,.15);color:var(--accent-green);padding:2px 8px;border-radius:10px;font-weight:500}
+/* Content area */
+.content{flex:1;overflow-y:auto;padding:24px}
+/* Module cards */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.module-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;position:relative}
+.module-card:hover{border-color:var(--accent-blue);transform:translateY(-2px)}
+.module-card .m-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px}
+.module-card .m-title{font-size:15px;font-weight:600;margin-bottom:6px}
+.module-card .m-desc{font-size:12.5px;color:var(--text-secondary);line-height:1.5}
+.module-card .m-tag{position:absolute;top:12px;right:12px;font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(88,166,255,.1);color:var(--accent-blue)}
+/* Chat panel (hidden by default) */
+.chat-panel{display:none;flex-direction:column;height:100%}
+.chat-panel.show{display:flex}
+.chat-messages{flex:1;overflow-y:auto;padding:24px}
+.msg{margin-bottom:20px;display:flex;gap:12px}
+.msg-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px}
+.msg-user .msg-avatar{background:linear-gradient(135deg,#d29922,#f85149)}
+.msg-ai .msg-avatar{border-radius:10px;overflow:hidden;background:var(--bg-tertiary);padding:2px}
+.msg-ai .msg-avatar img{width:100%;height:100%;object-fit:contain;border-radius:6px}
+.msg-bubble{max-width:70%;padding:12px 16px;border-radius:12px;font-size:13.5px;line-height:1.65}
+.msg-user .msg-bubble{background:var(--bg-tertiary);color:var(--text-primary);border-top-right-radius:4px}
+.msg-ai .msg-bubble{background:var(--bg-secondary);border:1px solid var(--border-color);border-top-left-radius:4px}
+/* Input area */
+.chat-input-area{border-top:1px solid var(--border-color);padding:16px 24px}
+.input-wrap{display:flex;align-items:center;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:0 16px;transition:border-color .2s}
+.input-wrap:focus-within{border-color:var(--accent-blue)}
+.chat-input{flex:1;background:transparent;border:none;outline:none;color:var(--text-primary);font-size:14px;padding:12px 0;font-family:inherit}
+.chat-send{background:var(--accent-blue);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13.5px;cursor:pointer;font-weight:500;transition:opacity .2s}
+.chat-send:hover{opacity:.9}
+.chat-send:disabled{opacity:.5;cursor:not-allowed}
+/* Generator form */
+.gen-form{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:24px;max-width:700px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:13px;font-weight:500;margin-bottom:6px;display:block;color:var(--text-secondary)}
+.form-select,.form-textarea,.form-input{width:100%;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-size:13.5px;font-family:inherit;outline:none;transition:border-color .2s}
+.form-select:focus,.form-textarea:focus,.form-input:focus{border-color:var(--accent-blue)}
+.form-textarea{min-height:80px;resize:vertical}
+.btn-row{display:flex;gap:10px;margin-top:20px}
+.btn{padding:10px 24px;border-radius:8px;font-size:13.5px;cursor:pointer;font-weight:500;border:none;transition:all .2s;font-family:inherit}
+.btn-primary{background:var(--accent-blue);color:#fff}.btn-primary:hover{opacity:.9}
+.btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color)}.btn-secondary:hover{border-color:var(--text-tertiary)}
+/* Output area */
+.output-area{margin-top:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:12px;padding:20px;display:none}
+.output-area.show{display:block}
+.output-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.output-title{font-size:14px;font-weight:600}
+.output-copy{font-size:12px;color:var(--accent-blue);cursor:pointer;background:none;border:none;font-family:inherit}
+.output-content{font-size:13.5px;line-height:1.75;color:var(--text-primary);white-space:pre-wrap}
+.output-loading{text-align:center;padding:40px;color:var(--text-tertiary)}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border-color);border-top-color:var(--accent-blue);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Image gen */
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px}
+.img-result{aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--border-color)}
+.img-result img{width:100%;height:object-fit:cover}
+/* Prompt library */
+.prompt-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.prompt-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s}
+.prompt-card:hover{border-color:var(--accent-purple)}
+.pc-cat{font-size:11px;color:var(--accent-purple);font-weight:500;margin-bottom:6px}
+.pc-title{font-size:14px;font-weight:600;margin-bottom:6px}
+.pc-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.pc-prompt{margin-top:10px;background:var(--bg-tertiary);border-radius:6px;padding:10px;font-size:12px;color:var(--text-secondary);line-height:1.5;word-break:break-all}
+/* Welcome page */
+.welcome-hero{text-align:center;padding:40px 0 48px}
+.welcome-hero h1{font-size:28px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.welcome-hero p{font-size:15px;color:var(--text-secondary);max-width:480px;margin:0 auto;line-height:1.6}
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+/* Mobile responsive */
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-260px;z-index:100;transition:left .25s;height:100%}
+  .sidebar.open{left:0}
+  .main{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-icon"><img src="ai-thinker-mascot.jpg" alt="AI猩客"></div>
+    <div><div class="logo-text">AI猩客实验室</div><div class="logo-sub">AI Thinker Tools</div></div>
+  </div>
+  
+  <nav class="nav-section">
+    <div class="nav-label">工作台</div>
+    <div class="nav-item active" onclick="switchPage('home')"><span class="icon">🏠</span>首页概览</div>
+    <div class="nav-item" onclick="switchPage('chat')"><span class="icon">💬</span>AI对话</div>
+  </nav>
+  
+  <nav class="nav-section">
+    <div class="nav-label">AIGC创作</div>
+    <div class="nav-item" onclick="switchPage('script')"><span class="icon">🎬</span>视频脚本生成</div>
+    <div class="nav-item" onclick="switchPage('article')"><span class="icon">📝</span>公众号/长文</div>
+    <div class="nav-item" onclick="switchPage('social')"><span class="icon">📱</span>社媒文案</div>
+    <div class="nav-item" onclick="switchPage('image')"><span class="icon">🎨</span>AI图片生成</div>
+  </nav>
+  
+  <nav class="nav-section">
+    <div class="nav-label">工具箱</div>
+    <div class="nav-item" onclick="switchPage('prompts')"><span class="icon">🧰</span>提示词库</div>
+    <div class="nav-item" onclick="switchPage('optimizer')"><span class="icon">✨</span>提示词优化</div>
+    <div class="nav-item" onclick="switchPage('email')"><span class="icon">📧</span>邮件/汇报润色</div>
+  </nav>
+  
+  <div class="sidebar-bottom">
+    <div class="claw-card" style="margin-bottom:8px">
+      <div class="claw-avatar">🦞</div>
+      <div class="claw-info"><div class="claw-name">OpenClaw 龙虾</div><div style="font-size:11px;color:var(--text-tertiary)">AI网关 · 已连接</div></div>
+    </div>
+    <div class="assistant-card">
+      <div class="assist-avatar">🎀</div>
+      <div class="assist-info"><div class="assist-name">Hermes 爱马仕</div><div class="assist-status">在线 · 随时待命</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar" id="topbar">
+    <span style="font-size:18px;cursor:pointer;display:none" id="menuBtn" onclick="toggleSidebar()">☰</span>
+    <span class="topbar-title" id="pageTitle">首页概览</span>
+    <span class="topbar-badge" id="pageBadge"></span>
+  </div>
+  
+  <!-- Content pages -->
+  <div class="content" id="pageContent">
+    
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page">
+      <div class="welcome-hero">
+        <h1>🦍 AI猩客工具台</h1>
+        <p>你的AI创作工作台，一站式搞定文字、图片、提示词。选一个功能开始吧。</p>
+      </div>
+      <div class="module-grid">
+        <div class="module-card" onclick="switchPage('chat')">
+          <div class="m-icon" style="background:rgba(88,166,255,.12)">💬</div>
+          <div class="m-title">AI对话</div>
+          <div class="m-desc">直接跟AI聊天，问任何问题，获取答案和创意灵感</div>
+          <div class="m-tag">最常用</div>
+        </div>
+        <div class="module-card" onclick="switchPage('script')">
+          <div class="m-icon" style="background:rgba(163,113,247,.12)">🎬</div>
+          <div class="m-title">视频脚本生成</div>
+          <div class="m-desc">输入主题，自动生成15秒短视频分镜脚本+字幕+音效建议</div>
+        </div>
+        <div class="module-card" onclick="switchPage('article')">
+          <div class="m-icon" style="background:rgba(63,185,80,.12)">📝</div>
+          <div class="m-title">公众号/长文</div>
+          <div class="m-desc">一键生成800-1200字公众号推文，含标题、正文、金句</div>
+        </div>
+        <div class="module-card" onclick="switchPage('social')">
+          <div class="m-icon" style="background:rgba(210,153,34,.12)">📱</div>
+          <div class="m-title">社媒文案</div>
+          <div class="m-desc">朋友圈/小红书/抖音标题一键生成，自带爆款钩子</div>
+        </div>
+        <div class="module-card" onclick="switchPage('image')">
+          <div class="m-icon" style="background:rgba(248,81,73,.12)">🎨</div>
+          <div class="m-title">AI图片生成</div>
+          <div class="m-desc">描述你想要的画面，AI帮你画出来。免费无限次使用</div>
+          <div class="m-tag">免费</div>
+        </div>
+        <div class="module-card" onclick="switchPage('prompts')">
+          <div class="m-icon" style="background:rgba(163,113,247,.12)">🧰</div>
+          <div class="m-title">提示词库</div>
+          <div class="m-desc">职场提效、副业赚钱、内容创作精选提示词，复制即用</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CHAT PAGE -->
+    <div id="page-chat" class="page" style="display:none">
+      <div class="chat-panel show" id="chatPanel">
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg msg-ai">
+            <div class="msg-avatar"><img src="ai-thinker-mascot.jpg" alt="AI猩客"></div>
+            <div class="msg-bubble">你好！我是AI猩客助手 🦍 有什么可以帮你的？<br><br>平台由 OpenClaw🦞 和 Hermes🎀 联合驱动。<br><br>你可以问我：<br>- 帮我写一个短视频脚本<br>- 给我10个副业赚钱的思路<br>- 怎么用AI提高工作效率<br>- 任何你想了解的问题</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="input-wrap">
+            <input class="chat-input" id="chatInput" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" id="chatSendBtn" onclick="sendChat()">发送</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SCRIPT PAGE -->
+    <div id="page-script" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">🎬 视频脚本生成器（15秒版）</h3>
+        <div class="form-group">
+          <label class="form-label">视频主题 / 核心信息 *</label>
+          <textarea class="form-textarea" id="scriptTopic" placeholder="例：AI如何帮助普通人月入过万"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">目标受众</label>
+          <select class="form-select" id="scriptAudience">
+            <option value="上班族">上班族（打工人）</option>
+            <option value="大学生">大学生</option>
+            <option value="副业党">副业创业者</option>
+            <option value="创业者">小微企业主</option>
+            <option value="普通人">普通大众</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">风格偏好</label>
+          <select class="form-select" id="scriptStyle">
+            <option value="hook">钩子爆款型（开头就抓人）</option>
+            <option value="pain">痛点共鸣型（戳中痛点）</option>
+            <option value="story">故事叙事型（有情节感）</option>
+            <option value="info">干货实用型（直接给方法）</option>
+            <option value="inspire">励志激励型（打鸡血）</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateScript()">生成脚本</button>
+          <button class="btn btn-secondary" onclick="clearForm(['scriptTopic'])">清空</button>
+        </div>
+        <div class="output-area" id="scriptOutput">
+          <div class="output-header"><span class="output-title">生成的视频脚本</span><button class="output-copy" onclick="copyOutput('scriptContent')">复制全部</button></div>
+          <div class="output-content" id="scriptContent"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ARTICLE PAGE -->
+    <div id="page-article" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">📝 公众号长文生成器</h3>
+        <div class="form-group">
+          <label class="form-label">文章主题 *</label>
+          <textarea class="form-textarea" id="articleTopic" placeholder="例：为什么说2026年是普通人入局AI的最后窗口期"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">文章类型</label>
+          <select class="form-select" id="articleType">
+            <option value="观点">观点输出类</option>
+            <option value="教程">教程干货类</option>
+            <option value="案例">案例分析类</option>
+            <option value="盘点">盘点清单类</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">补充要点（可选）</label>
+          <textarea class="form-textarea" id="articleExtra" placeholder="希望文章包含的关键论点或数据..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateArticle()">生成文章</button>
+          <button class="btn btn-secondary" onclick="clearForm(['articleTopic','articleExtra'])">清空</button>
+        </div>
+        <div class="output-area" id="articleOutput">
+          <div class="output-header"><span class="output-title">生成的公众号文章</span><button class="output-copy" onclick="copyOutput('articleContent')">复制全部</button></div>
+          <div class="output-content" id="articleContent"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SOCIAL PAGE -->
+    <div id="page-social" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">📱 社媒文案生成器</h3>
+        <div class="form-group">
+          <label class="form-label">你要发什么内容？*</label>
+          <textarea class="form-textarea" id="socialTopic" placeholder="描述你要推广的产品、活动或想表达的观点..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">发布平台</label>
+          <select class="form-select" id="socialPlatform">
+            <option value="wechat">朋友圈</option>
+            <option value="xiaohongshu">小红书</option>
+            <option value="douyin">抖音标题/文案</option>
+            <option value="weibo">微博</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateSocial()">生成文案</button>
+          <button class="btn btn-secondary" onclick="clearForm(['socialTopic'])">清空</button>
+        </div>
+        <div class="output-area" id="socialOutput">
+          <div class="output-header"><span class="output-title">生成的社媒文案</span><button class="output-copy" onclick="copyOutput('socialContent')">复制全部</button></div>
+          <div class="output-content" id="socialContent"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- IMAGE PAGE -->
+    <div id="page-image" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">🎨 AI图片生成器</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">描述你想要的画面，支持中文描述。免费使用，无需注册。</p>
+        <div class="form-group">
+          <label class="form-label">画面描述 *</label>
+          <textarea class="form-textarea" id="imagePrompt" placeholder="例：一只穿着蓝色太空服的大猩猩，戴着护目镜，站在未来科技城市的霓虹灯前，赛博朋克风格" style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">图片数量</label>
+          <select class="form-select" id="imageCount">
+            <option value="1">1张</option>
+            <option value="2">2张</option>
+            <option value="4" selected>4张</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateImage()">生成图片</button>
+          <button class="btn btn-secondary" onclick="clearForm(['imagePrompt'])">清空</button>
+        </div>
+        <div class="output-area" id="imageOutput">
+          <div class="img-grid" id="imageGrid"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- PROMPTS PAGE -->
+    <div id="page-prompts" class="page" style="display:none">
+      <h3 style="font-size:17px;margin-bottom:16px">🧰 提示词宝库</h3>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">精选实用提示词模板，点击即可复制到剪贴板</p>
+      <div class="prompt-cards" id="promptCards"></div>
+    </div>
+    
+    <!-- OPTIMIZER PAGE -->
+    <div id="page-optimizer" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">✨ 提示词优化器</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">把你写的粗糙提示词贴进来，AI帮你优化成专业级版本</p>
+        <div class="form-group">
+          <label class="form-label">原始提示词 *</label>
+          <textarea class="form-textarea" id="optInput" placeholder="把你的原始提示词粘贴到这里..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">使用场景</label>
+          <select class="form-select" id="optScene">
+            <option value="general">通用场景</option>
+            <option value="writing">写作/文案</option>
+            <option value="code">编程/技术</option>
+            <option value="business">商业分析</option>
+            <option value="creative">创意设计</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="optimizePrompt()">优化提示词</button>
+          <button class="btn btn-secondary" onclick="clearForm(['optInput'])">清空</button>
+        </div>
+        <div class="output-area" id="optOutput">
+          <div class="output-header"><span class="output-title">优化后的提示词</span><button class="output-copy" onclick="copyOutput('optContent')">复制</button></div>
+          <div class="output-content" id="optContent"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- EMAIL PAGE -->
+    <div id="page-email" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">📧 邮件/汇报润色</h3>
+        <div class="form-group">
+          <label class="form-label">原始内容 *</label>
+          <textarea class="form-textarea" id="emailDraft" placeholder="把你的草稿或要点粘贴到这里..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">文档类型</label>
+          <select class="form-select" id="emailType">
+            <option value="email">商务邮件</option>
+            <option value="report">工作周报/汇报</option>
+            <option value="proposal">方案提案</option>
+            <option value="notice">通知公告</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="polishEmail()">润色优化</button>
+          <button class="btn btn-secondary" onclick="clearForm(['emailDraft'])">清空</button>
+        </div>
+        <div class="output-area" id="emailOutput">
+          <div class="output-header"><span class="output-title">润色结果</span><button class="output-copy" onclick="copyOutput('emailContent')">复制</button></div>
+          <div class="output-content" id="emailContent"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ====== API CONFIG ======
+const DEEPSEEK_API_KEY = 'sk-d75205b6e9d14123a98642a27a26ce4f';
+const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+// ====== Page Navigation ======
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.style.display='none');
+  document.getElementById('page-'+page).style.display='block';
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.getAttribute('onclick').includes("'"+page+"'"));
+  if(activeNav) activeNav.classList.add('active');
+  
+  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色'};
+  const badges = {chat:'在线',script:'15秒内',image:'免费'};
+  document.getElementById('pageTitle').textContent = titles[page]||'';
+  document.getElementById('pageBadge').textContent = badges[page]||'';
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ====== DeepSeek API Call ======
+async function callDeepSeek(systemPrompt, userMessage, maxTokens) {
+  maxTokens = maxTokens || 2000;
+  try {
+    const res = await fetch(DEEPSEEK_API_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':`Bearer ${DEEPSEEK_API_KEY}`},
+      body: JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:systemPrompt},{role:'user',content:userMessage}],max_tokens:maxTokens,stream:false})
+    });
+    if(!res.ok){const e=await res.json().catch(()=>{});throw new Error(e?.error?.message||`HTTP ${res.status}`);}
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch(e) {
+    console.error('API error:', e);
+    throw e;
+  }
+}
+
+function showOutput(outputId, contentId, loadingText) {
+  const outputEl=document.getElementById(outputId);
+  outputEl.classList.add('show');
+  if(loadingText){
+    document.getElementById(contentId).innerHTML='<div class="output-loading"><span class="spinner"></span>'+loadingText+'</div>';
+  }
+  return new Promise(resolve => {
+    // resolve with the content element
+    resolve(document.getElementById(contentId));
+  });
+}
+
+// ====== Chat Functions ======
+let chatHistory = [{role:'system',content:'你是AI猩客实验室的AI助手，名字叫"猩客"。你是一个专业、友好、实用的AI助手，帮助学员解决AI应用、工作效率提升、副业创业等方面的问题。回答简洁有力，不要废话。平台底层由OpenClaw（龙虾）驱动，Hermes（爱马仕）是你的搭档。如果用户需要生成文案或图片，引导他使用左侧对应的功能模块。'}];
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg)return;
+  input.value='';
+  
+  const messagesDiv = document.getElementById('chatMessages');
+  // Add user message
+  messagesDiv.innerHTML += '<div class="msg msg-user"><div class="msg-avatar">😊</div><div class="msg-bubble">'+escapeHtml(msg)+'</div></div>';
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  
+  // Add loading indicator
+    const loadingId = 'loading-'+Date.now();
+    messagesDiv.innerHTML += '<div class="msg msg-ai" id="'+loadingId+'"><div class="msg-avatar"><img src="ai-thinker-mascot.jpg" alt="AI猩客"></div><div class="msg-bubble"><div class="output-loading"><span class="spinner"></span>思考中...</div></div></div>';
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  
+  chatHistory.push({role:'user',content:msg});
+  
+  try {
+    const response = await callDeepSeek(chatHistory[0].content, msg, 1500);
+    chatHistory.push({role:'assistant',content:response});
+    
+    const loadingEl = document.getElementById(loadingId);
+    if(loadingEl) loadingEl.querySelector('.msg-bubble').innerHTML = formatResponse(response);
+  } catch(e) {
+    const loadingEl = document.getElementById(loadingId);
+    if(loadingEl) loadingEl.querySelector('.msg-bubble').innerHTML = '<span style="color:var(--accent-red)">出错了：'+e.message+'<br><br>请检查网络连接后重试。</span>';
+  }
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function formatResponse(t){return t.replace(/\n/g,'<br>');}
+
+// ====== Video Script Generation ======
+async function generateScript() {
+  const topic = document.getElementById('scriptTopic').value.trim();
+  if(!topic){alert('请填写视频主题');return;}
+  const audience = document.getElementById('scriptAudience').value;
+  const style = document.getElementById('scriptStyle').value;
+  
+  showOutput('scriptOutput','scriptContent','正在生成视频脚本...');
+  const systemPrompt = `你是专业的短视频脚本创作者，擅长创作15秒以内的短视频脚本。要求：
+1. 总时长严格控制在15秒以内（约45-60字口语）
+2. 结构：开头钩子（0-3秒）→ 核心反转/痛点（3-10秒）→ 行动号召（10-15秒）
+3. 输出格式：
+【分镜】每行一个镜头，标注时长
+【字幕】对应的口播文案
+【音效】BGM/音效建议
+4. 风格根据用户选择匹配`;
+
+  try {
+    const result = await callDeepSeek(systemPrompt, `请为以下内容生成15秒短视频脚本：\n主题：${topic}\n目标受众：${audience}\n风格：${style}`);
+    document.getElementById('scriptContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('scriptContent').innerHTML = '<span style="color:var(--accent-red)">生成失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Article Generation ======
+async function generateArticle() {
+  const topic = document.getElementById('articleTopic').value.trim();
+  if(!topic){alert('请填写文章主题');return;}
+  const type = document.getElementById('articleType').value;
+  const extra = document.getElementById('articleExtra').value.trim();
+  
+  showOutput('articleOutput','articleContent','正在生成文章...');
+  let prompt = `请撰写一篇${type}类的微信公众号文章。\n主题：${topic}\n`;
+  if(extra) prompt += `\n补充要求：${extra}\n`;
+  prompt += `\n\n要求：\n- 字数800-1200字\n- 包含吸引人的标题（提供3个备选）\n- 正文结构清晰，有小标题\n- 结尾有金句总结\n- 适合手机阅读，段落短小精悍`;
+
+  try {
+    const result = await callDeepSeek('你是资深的公众号运营专家和内容创作者，擅长写出高传播度的公众号文章。', prompt, 2500);
+    document.getElementById('articleContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('articleContent').innerHTML = '<span style="color:var(--accent-red)">生成失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Social Media Generation ======
+async function generateSocial() {
+  const topic = document.getElementById('socialTopic').value.trim();
+  if(!topic){alert('请填写要发布的内容描述');return;}
+  const platform = document.getElementById('socialPlatform').value;
+  
+  showOutput('socialOutput','socialContent','正在生成文案...');
+  
+  const platformRules = {
+    wechat:'朋友圈：不超过140字，适合配图，语气自然亲切',
+    xiaohongshu:'小红书：包含emoji、标签、分段清晰，300-500字，带话题标签',
+    douyin:'抖音：标题要有钩子（前3秒抓人），配合口播节奏，带热门话题',
+    weibo:'微博：简洁有力，可加话题标签，适合传播'
+  };
+  
+  try {
+    const result = await callDeepSeek(`你是社交媒体运营专家，精通各平台的爆款文案写作。`, `根据以下信息生成${platformRules[platform]}文案：\n内容：${topic}\n\n请给出3个不同版本的文案供选择。`, 1200);
+    document.getElementById('socialContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('socialContent').innerHTML = '<span style="color:var(--accent-red)">生成失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Image Generation (Pollinations - Free) ======
+async function generateImage() {
+  const prompt = document.getElementById('imagePrompt').value.trim();
+  if(!prompt){alert('请描述你想生成的画面');return;}
+  const count = parseInt(document.getElementById('imageCount').value);
+  
+  const outputEl = document.getElementById('imageOutput');
+  outputEl.classList.add('show');
+  const grid = document.getElementById('imageGrid');
+  grid.innerHTML = '<div class="output-loading" style="grid-column:1/-1;text-align:center;padding:40px"><span class="spinner"></span>正在生成图片...</div>';
+  
+  // Pollinations free image generation
+  for(let i=0;i<count;i++){
+    const img = document.createElement('div');
+    img.className = 'img-result';
+    img.innerHTML = '<div style="width:100%;height:100%;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);font-size:12px"><span class="spinner"></span></div>';
+    grid.appendChild(img);
+  }
+  
+  for(let i=0;i<count;i++){
+    const encodedPrompt = encodeURIComponent(prompt);
+    const imgUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&seed=${Date.now()+i}&nologo=true`;
+    const imgEl = grid.children[i];
+    imgEl.innerHTML = `<a href="${imgUrl}" target="_blank" style="display:block"><img src="${imgUrl}" alt="AI生成图${i+1}" onload="this.parentElement.style.border='none'" onerror="this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--accent-red);font-size:12px\\'>生成失败，请重试</div>'"></a>`;
+  }
+}
+
+// ====== Prompt Library Data & Render ======
+const PROMPT_LIBRARY = [
+  {category:'职场效率',title:'会议纪要整理',desc:'把杂乱的会议记录整理成结构化纪要',prompt:'请将以下会议记录整理成结构化的会议纪要，包含：1. 会议基本信息（时间/参会人/主题）2. 讨论要点（按议题分类）3. 决议事项 4. 待办事项及负责人 5. 截止时间\n\n会议记录原文：\n{{输入会议记录}}'},
+  {category:'职场效率',title:'邮件回复模板',desc:'快速生成得体的商务邮件回复',prompt:'请帮我写一封商务邮件回复，要求：\n1. 语气专业但不生硬\n2. 简洁明了，不废话\n3. 明确表达态度和下一步行动\n\n背景信息：\n{{输入邮件上下文}}'},
+  {category:'副业赚钱',title:'副业项目评估',desc:'系统评估一个副业项目的可行性',prompt:'请从以下几个维度全面评估这个副业项目的可行性：\n1. 启动成本（资金/时间/技能门槛）\n2. 收益天花板和回本周期\n3. 竞争程度和差异化空间\n4. 可持续性和扩展性\n5. 风险点和建议\n\n项目描述：\n{{输入副业项目}}'},
+  {category:'副业赚钱',title:'产品卖点提炼',desc:'从产品特征提炼打动客户的卖点',prompt:'请帮我从以下产品特征中提炼出最能打动目标客户的3-5个核心卖点，每个卖点包含：\n1. 卖点一句话概括\n2. 对客户的具体价值\n3. 与竞品的差异点\n\n产品信息：\n{{输入产品信息}}'},
+  {category:'内容创作',title:'爆款标题生成',desc:'根据内容生成多个高点击率标题',prompt:'请为以下内容生成10个不同风格的标题，每个都具备高点击潜力：\n- 2个悬念式标题（引发好奇）\n- 2个数字式标题（具体明确）\n- 2个反差式标题（颠覆认知）\n- 2个痛点式标题（直击需求）\n- 2个情绪式标题（激发共鸣）\n\n内容摘要：\n{{输入内容}}'},
+  {category:'内容创作',title:'大纲结构化',desc:'将散乱的想法组织成完整的内容大纲',prompt:'请帮我将以下想法整理成一个完整的内容大纲：\n1. 拟定3个候选标题\n2. 设计引人入胜的开头\n3. 分3-5个小节展开论述\n4. 每节包含核心论点和支撑素材\n5. 设计有力的结尾和行动号召\n\n原始想法：\n{{输入想法}}'},
+  {category:'学习提升',title:'知识卡片制作',desc:'将知识点浓缩成便于记忆的学习卡片',prompt:'请将以下知识点制作成一张学习卡片，格式如下：\n📌 核心概念（一句话定义）\n🔑 关键要点（3-5条bullet points）\n⚡ 容易混淆的点\n🔗 相关概念关联\n💡 实际应用场景\n\n知识点：\n{{输入知识点}}'},
+  {category:'学习提升',title:'读书笔记框架',desc:'读完一本书后快速产出结构化笔记',prompt:'请帮我基于以下书籍信息生成结构化读书笔记：\n1. 书籍基本信息\n2. 一句话总结本书核心思想\n3. Top 3最有价值的观点（附个人理解）\n4. 可落地的行动清单\n5. 推荐人群和不推荐人群\n6. 关联阅读推荐\n\n书籍信息：\n{{输入书籍}}'},
+  {category:'AI实战',title:'AI指令工程',desc:'针对具体任务编写高质量的AI提示词',prompt:'请帮我为这个具体任务编写一个高质量的AI提示词，要求：\n1. 明确角色定位\n2. 清晰的任务描述\n3. 具体的输出格式要求\n4. 示例或约束条件\n5. 迭代优化建议\n\n我想要完成的任务：\n{{输入任务描述}}'},
+  {category:'AI实战',title:'AI工作流设计',desc:'用AI串联多个步骤完成复杂任务',prompt:'请帮我设计一个完整的AI工作流来完成这个复杂任务：\n1. 拆解任务为子步骤\n2. 每步指定使用的AI工具/提示词\n3. 定义各步骤之间的衔接方式\n4. 质量检查节点\n5. 可能的问题和备选方案\n\n任务目标：\n{{输入任务目标}}'}
+];
+
+function renderPrompts(){
+  const container = document.getElementById('promptCards');
+  container.innerHTML = PROMPT_LIBRARY.map((p,i)=>`
+    <div class="prompt-card" onclick="copyPrompt(${i})">
+      <div class="pc-cat">${p.category}</div>
+      <div class="pc-title">${p.title}</div>
+      <div class="pc-desc">${p.desc}</div>
+      <div class="pc-prompt">${p.prompt}</div>
+    </div>`).join('');
+}
+
+function copyPrompt(idx){
+  const p = PROMPT_LIBRARY[idx].prompt;
+  navigator.clipboard.writeText(p).then(()=>{
+    alert(`已复制「${PROMPT_LIBRARY[idx].title}」提示词模板！\n\n把 {{xxx}} 替换成你的实际内容即可使用。`);
+  }).catch(()=>{fallbackCopy(p)});
+}
+
+// ====== Prompt Optimizer ======
+async function optimizePrompt() {
+  const input = document.getElementById('optInput').value.trim();
+  if(!input){alert('请输入原始提示词');return;}
+  const scene = document.getElementById('optScene').value;
+  
+  showOutput('optOutput','optContent','正在优化提示词...');
+  
+  try {
+    const result = await callDeepSeek(
+      '你是一个提示词工程专家，擅长将模糊、简陋的用户提示词优化为高质量的专业级提示词。优化原则：1.增加明确的角色设定 2.拆解任务为具体步骤 3.规定输出格式和约束 4.添加示例和边界条件 5.保持原意不变但大幅提升效果。',
+      `请优化以下提示词，使用场景：${scene}\n\n原始提示词：\n${input}`,
+      1500
+    );
+    document.getElementById('optContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('optContent').innerHTML = '<span style="color:var(--accent-red)">优化失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Email Polisher ======
+async function polishEmail() {
+  const draft = document.getElementById('emailDraft').value.trim();
+  if(!draft){alert('请输入原始内容');return;}
+  const type = document.getElementById('emailType').value;
+  
+  showOutput('emailOutput','emailContent','正在润色...');
+  
+  const typeGuide = {
+    email:'商务邮件，要求：专业、礼貌、简洁，包含清晰的称呼、正文、结尾敬语',
+    report:'工作周报/汇报，要求：数据驱动、结构清晰（本周完成/进行中/问题/下周计划）、突出成果',
+    proposal:'方案提案，要求：有说服力、逻辑严密、利益导向、包含可行性分析',
+    notice:'通知公告，要求：正式规范、信息完整、语气庄重'
+  };
+  
+  try {
+    const result = await callDeepSeek(
+      `你是企业级商务写作专家，精通各类商务文档的撰写和润色。`,
+      `请对以下草稿进行专业润色：\n文档类型：${typeGuide[type]}\n\n原始草稿：\n${draft}`,
+      1500
+    );
+    document.getElementById('emailContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('emailContent').innerHTML = '<span style="color:var(--accent-red)">润色失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Utilities ======
+function copyOutput(elementId){
+  const text = document.getElementById(elementId).innerText || document.getElementById(elementId).textContent;
+  fallbackCopy(text);
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{document.execCommand('copy'); alert('已复制到剪贴板！');}catch(e){console.error('copy failed',e);}
+  document.body.removeChild(ta);
+}
+
+function clearForm(ids){
+  ids.forEach(id => document.getElementById(id).value='');
+}
+
+// ====== Init ======
+renderPrompts();
+</script>
+</body>
+</html>
