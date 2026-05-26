@@ -157,6 +157,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
     <div class="nav-item" onclick="switchPage('prompts')"><span class="icon">🧰</span>提示词库</div>
     <div class="nav-item" onclick="switchPage('optimizer')"><span class="icon">✨</span>提示词优化</div>
     <div class="nav-item" onclick="switchPage('email')"><span class="icon">📧</span>邮件/汇报润色</div>
+    <div class="nav-item" onclick="switchPage('sidejob')"><span class="icon">💰</span>AI副业规划</div>
+    <div class="nav-item" onclick="switchPage('resume')"><span class="icon">📄</span>简历/自我介绍</div>
   </nav>
   
   <div class="sidebar-bottom">
@@ -220,6 +222,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
           <div class="m-icon" style="background:rgba(163,113,247,.12)">🧰</div>
           <div class="m-title">提示词库</div>
           <div class="m-desc">职场提效、副业赚钱、内容创作精选提示词，复制即用</div>
+        </div>
+        <div class="module-card" onclick="switchPage('optimizer')">
+          <div class="m-icon" style="background:rgba(88,166,255,.12)">✨</div>
+          <div class="m-title">提示词优化</div>
+          <div class="m-desc">把粗糙的提示词交给AI，帮你优化成专业级别的指令</div>
+        </div>
+        <div class="module-card" onclick="switchPage('email')">
+          <div class="m-icon" style="background:rgba(63,185,80,.12)">📧</div>
+          <div class="m-title">邮件/汇报润色</div>
+          <div class="m-desc">草稿贴进来，AI一键升级为专业商务文档，告别尬写</div>
+        </div>
+        <div class="module-card" onclick="switchPage('sidejob')">
+          <div class="m-icon" style="background:rgba(210,153,34,.12)">💰</div>
+          <div class="m-title">AI副业规划</div>
+          <div class="m-desc">输入你的技能和时间，AI帮你定制专属的AI副业变现方案</div>
+          <div class="m-tag">热门</div>
+        </div>
+        <div class="module-card" onclick="switchPage('resume')">
+          <div class="m-icon" style="background:rgba(248,81,73,.12)">📄</div>
+          <div class="m-title">简历/自我介绍</div>
+          <div class="m-desc">输入经历，AI生成专业简历、自我介绍、面试回答话术</div>
         </div>
       </div>
     </div>
@@ -433,6 +456,77 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
       </div>
     </div>
 
+    <!-- SIDEJOB PAGE -->
+    <div id="page-sidejob" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">💰 AI副业规划师</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">告诉我你的情况，AI帮你定制专属的AI副业变现方案</p>
+        <div class="form-group">
+          <label class="form-label">你目前的职业 / 技能 *</label>
+          <textarea class="form-textarea" id="sidejobSkills" placeholder="例：我是一名市场运营，会写文案、做PPT、做数据分析，有2年工作经验"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">每周可投入时间</label>
+          <select class="form-select" id="sidejobTime">
+            <option value="5小时以内">5小时以内（碎片时间）</option>
+            <option value="5-10小时">5-10小时（下班后）</option>
+            <option value="10-20小时">10-20小时（副业重度投入）</option>
+            <option value="全职">全职转型</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">收入目标</label>
+          <select class="form-select" id="sidejobGoal">
+            <option value="月入1000-3000">月入1000-3000（零花钱）</option>
+            <option value="月入3000-8000">月入3000-8000（补贴生活）</option>
+            <option value="月入1万以上">月入1万以上（超越本职）</option>
+            <option value="全职替代">全职替代收入</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateSidejob()">生成我的副业规划</button>
+          <button class="btn btn-secondary" onclick="clearForm(['sidejobSkills'])">清空</button>
+        </div>
+        <div class="output-area" id="sidejobOutput">
+          <div class="output-header"><span class="output-title">专属AI副业规划方案</span><button class="output-copy" onclick="copyOutput('sidejobContent')">复制全部</button></div>
+          <div class="output-content" id="sidejobContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUME PAGE -->
+    <div id="page-resume" class="page" style="display:none">
+      <div class="gen-form">
+        <h3 style="font-size:17px;margin-bottom:20px">📄 简历 / 自我介绍生成器</h3>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">输入你的基本经历，AI帮你生成专业版简历、自我介绍和面试话术</p>
+        <div class="form-group">
+          <label class="form-label">个人基本信息 *</label>
+          <textarea class="form-textarea" id="resumeInfo" placeholder="例：毕业3年，现任市场运营，负责过微信公众号运营（涨粉10万）、策划了3场线下活动，熟悉数据分析工具..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">目标岗位</label>
+          <input class="form-input" id="resumeTarget" placeholder="例：新媒体运营主管、AI产品经理...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">生成内容</label>
+          <select class="form-select" id="resumeType">
+            <option value="resume">简历优化（工作经历+技能描述）</option>
+            <option value="intro">1分钟自我介绍（面试口述版）</option>
+            <option value="cover">求职信/自荐信</option>
+            <option value="answer">面试常见问题回答话术</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateResume()">生成内容</button>
+          <button class="btn btn-secondary" onclick="clearForm(['resumeInfo','resumeTarget'])">清空</button>
+        </div>
+        <div class="output-area" id="resumeOutput">
+          <div class="output-header"><span class="output-title">生成结果</span><button class="output-copy" onclick="copyOutput('resumeContent')">复制全部</button></div>
+          <div class="output-content" id="resumeContent"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -449,8 +543,8 @@ function switchPage(page) {
   const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.getAttribute('onclick').includes("'"+page+"'"));
   if(activeNav) activeNav.classList.add('active');
   
-  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色'};
-  const badges = {chat:'在线',script:'15秒内',image:'免费'};
+  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色',sidejob:'💰 AI副业规划',resume:'📄 简历/自我介绍'};
+  const badges = {chat:'在线',script:'15秒内',image:'免费',sidejob:'热门'};
   document.getElementById('pageTitle').textContent = titles[page]||'';
   document.getElementById('pageBadge').textContent = badges[page]||'';
 }
@@ -697,6 +791,56 @@ async function polishEmail() {
     document.getElementById('emailContent').innerHTML = formatResponse(result);
   } catch(e) {
     document.getElementById('emailContent').innerHTML = '<span style="color:var(--accent-red)">润色失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Sidejob Planner ======
+async function generateSidejob() {
+  const skills = document.getElementById('sidejobSkills').value.trim();
+  if(!skills){alert('请填写你的职业技能信息');return;}
+  const time = document.getElementById('sidejobTime').value;
+  const goal = document.getElementById('sidejobGoal').value;
+  
+  showOutput('sidejobOutput','sidejobContent','正在为你定制AI副业方案...');
+  
+  try {
+    const result = await callDeepSeek(
+      '你是一位AI副业变现专家，深谙中国互联网副业生态，了解2024-2025年AI工具变现的最新趋势。你帮助普通人根据自身技能找到最适合的AI副业方向，给出可落地的行动计划。',
+      `请为我定制一份专属AI副业规划方案：\n\n个人背景：${skills}\n每周可投入时间：${time}\n收入目标：${goal}\n\n请输出：\n1. 最适合的3个AI副业方向（结合我的技能和时间，按可行性排序）\n2. 每个方向的具体操作路径（前3步做什么）\n3. 0-30天快速启动计划\n4. 需要掌握的核心AI工具清单\n5. 常见坑点和注意事项`,
+      2000
+    );
+    document.getElementById('sidejobContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('sidejobContent').innerHTML = '<span style="color:var(--accent-red)">生成失败：'+e.message+'</span>';
+  }
+}
+
+// ====== Resume Generator ======
+async function generateResume() {
+  const info = document.getElementById('resumeInfo').value.trim();
+  if(!info){alert('请填写个人经历信息');return;}
+  const target = document.getElementById('resumeTarget').value.trim();
+  const type = document.getElementById('resumeType').value;
+  
+  showOutput('resumeOutput','resumeContent','正在生成内容...');
+  
+  const typePrompts = {
+    resume: '请帮我优化以下工作经历描述，使其更专业、量化（加入数据）、更有说服力，适合用于简历的工作经历模块',
+    intro: '请帮我写一段1分钟的面试自我介绍口稿（约200字），要有逻辑、有亮点、让面试官印象深刻',
+    cover: '请帮我写一封有针对性的求职信/自荐信，包含：开篇吸引眼球、核心价值展示、与岗位的契合点、明确的行动号召',
+    answer: '请帮我准备5个面试常见问题的回答话术（包含：自我介绍、最大优缺点、职业规划、为何应聘此岗位、过往最大成就）'
+  };
+  
+  try {
+    const prompt = `${typePrompts[type]}\n\n${target ? '目标岗位：' + target + '\n\n' : ''}个人信息：\n${info}`;
+    const result = await callDeepSeek(
+      '你是专业的职业规划顾问和HR顾问，擅长帮助求职者包装和呈现自己的经历，写出打动面试官的材料。',
+      prompt,
+      1800
+    );
+    document.getElementById('resumeContent').innerHTML = formatResponse(result);
+  } catch(e) {
+    document.getElementById('resumeContent').innerHTML = '<span style="color:var(--accent-red)">生成失败：'+e.message+'</span>';
   }
 }
 
