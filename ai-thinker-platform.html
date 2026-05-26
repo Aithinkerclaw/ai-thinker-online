@@ -21,7 +21,7 @@
   --accent-red:#f85149;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-serif;background:var(--bg-primary);color:var(--text-primary);height:100vh;display:flex;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh}
 /* Sidebar */
 .sidebar{width:240px;background:var(--bg-secondary);border-right:1px solid var(--border-color);display:flex;flex-direction:column;flex-shrink:0}
 .sidebar-header{padding:16px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;gap:10px}
@@ -126,18 +126,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 /* Mobile responsive */
 @media(max-width:768px){
   /* ===== Layout ===== */
-  body{overflow-x:hidden}
-  .app{flex-direction:column;height:auto;min-height:100vh}
-  .sidebar{position:fixed;left:-280px;top:0;bottom:0;z-index:200;transition:left .3s cubic-bezier(.4,0,.2,1);width:260px;height:100vh!important;box-shadow:2px 0 20px rgba(0,0,0,.4)}
-  .sidebar.open{left:0}
-  .main{width:100%;min-height:100vh}
+  body{overflow-x:hidden!important}
+  .app{flex-direction:column!important;height:auto!important;min-height:100vh!important;overflow:visible!important}
+  .sidebar{position:fixed;left:-280px;top:0;bottom:0;z-index:999;transition:left .3s cubic-bezier(.4,0,.2,1);width:260px;height:100vh!important;box-shadow:2px 0 20px rgba(0,0,0,.4);display:flex!important;flex-direction:column!important}
+  .sidebar.open{left:0!important}
+  .main{width:100%;min-height:100vh;display:flex!important;flex-direction:column!important}
 
   /* Overlay when sidebar open */
-  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
-  .sidebar-overlay.show{display:block}
+  .sidebar-overlay{display:none!important;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998}
+  .sidebar-overlay.show{display:block!important}
 
   /* ===== Topbar ===== */
-  .topbar{padding:12px 16px!important;border-radius:0;border-left:none;border-right:none}
+  .topbar{padding:12px 16px!important;border-radius:0;border-left:none;border-right:none;position:relative;z-index:5}
   #menuBtn{display:inline-block!important;font-size:24px!important;padding:0!important;min-width:44px!important;min-height:44px!important;line-height:44px!important;text-align:center;color:var(--text-primary);background:rgba(255,255,255,.06);border-radius:8px}
   .topbar-title{font-size:15px}
 
@@ -200,6 +200,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 </style>
 </head>
 <body>
+
+<!-- App Container -->
+<div class="app" style="display:flex;min-height:100vh">
 
 <!-- Sidebar -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -599,6 +602,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
     </div>
 
   </div>
+</div>
 </div>
 
 <script>
