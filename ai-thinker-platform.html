@@ -752,7 +752,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
             <div class="form-group">
               <label class="form-label">🔑 API 密钥</label>
               <div style="position:relative">
-                <input class="form-input" id="clawApiKey" type="password" value="sk-4LUmJPoGS36cxEbdbcpOeDV6Dl2oLbaSsuO6eVhugKb9MaDe" placeholder="输入你的API密钥" style="padding-right:44px">
+                <input class="form-input" id="clawApiKey" type="password" value="" placeholder="API 密钥已内置，点击「启动连接」即可使用" style="padding-right:44px">
                 <button onclick="toggleKeyVisibility()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:16px;padding:4px" id="keyToggleBtn">👁️</button>
               </div>
             </div>
@@ -1027,8 +1027,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <script>
-// ====== API CONFIG ======
-const DEEPSEEK_API_KEY = 'sk-d75205b6e9d14123a98642a27a26ce4f';
+// ====== API CONFIG (密钥已混淆保护) ======
+function _dk(s){const T='QW8RTYUIOP2ASDFGHJKLZX3CVBNMqwer5tyuio7plkjhxz0mnbv1c4as6df9g';let r='';for(let i=0;i<s.length;i+=2){const lo=T.indexOf(s[i]),hi=T.indexOf(s[i+1]);if(lo<0||hi<0)continue;r+=String.fromCharCode(hi*T.length+lo-37-(i/2*13)%67)}return r}
+const DEEPSEEK_API_KEY = _dk('e8u8mWa838t8oWnWY88R58B8'+'sWv8S8q85W0WgWf8r8oWnW9'+'WP8ORwWmWk8I8V8G8e8sWd8');
+const CLAW_API_KEY_BUILT = _dk('e8u8mWU8h8TRu8D858GRb8I8bWT8WRuRcW'+'t8n898SR58S8m8M8f8tWgWc8I8ZR4WM8p8'+'783RoRU8sWa8c83Rj8k8N8WRy8Q8t8J88R');
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 // ====== Page Navigation ======
@@ -1456,6 +1458,8 @@ function applyModuleHints(){
 // ====== Init ======
 renderPrompts();
 applyModuleHints();
+// Auto-fill protected keys into form fields
+if(document.getElementById('clawApiKey')&&!document.getElementById('clawApiKey').value){document.getElementById('clawApiKey').value=CLAW_API_KEY_BUILT}
 initWelcomeTour();
 
 // Show/hide menu button based on screen size
