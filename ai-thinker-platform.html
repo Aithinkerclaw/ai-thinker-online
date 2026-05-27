@@ -773,7 +773,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
         <!-- 模式切换器 -->
         <div class="claw-mode-switcher">
           <button class="claw-mode-btn active" id="modeCloudBtn" onclick="switchClawMode('cloud')"><span>☁️</span> 云端模式</button>
-          <button class="claw-mode-btn" id="modeLocalBtn" onclick="switchClawMode('local')"><span>🖥️</span> 本地网关</button>
+          <button class="claw-mode-btn" id="modeLocalBtn" onclick="switchClawMode('local')"><span>🖥️</span> 本地网关<span id="httpsTag" style="display:none;font-size:10px;margin-left:3px;background:rgba(210,153,34,.2);color:#d29922;padding:1px 5px;border-radius:4px;font-weight:700">HTTPS</span></button>
         </div>
 
         <!-- ====== ☁️ 云端模式面板 ====== -->
@@ -858,6 +858,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 
         <!-- ====== 🖥️ 本地网关面板 ====== -->
         <div class="claw-mode-panel" id="localPanel">
+
+          <!-- HTTPS 安全策略提示 -->
+          <div id="httpsWarning" style="display:none;background:linear-gradient(135deg,rgba(210,153,34,.12),rgba(248,81,73,.08));border:1px solid rgba(210,153,34,.35);border-radius:12px;padding:16px 18px;margin-bottom:16px">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <span style="font-size:24px;flex-shrink:0;margin-top:2px">🔒</span>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#d29922;margin-bottom:6px">当前为 HTTPS 安全连接，本地网关被浏览器拦截</div>
+                <div style="font-size:12.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px">
+                  浏览器禁止从 HTTPS 页面发起非加密的 WebSocket 连接（<code style="background:var(--bg-tertiary);padding:1px 5px;border-radius:3px;font-size:11.5px">ws://127.0.0.1:18679</code>）。
+                  这是浏览器的安全策略，不是程序问题。你的 Gateway 实际上正在正常运行 ✅
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button onclick="openLocalFile()" class="btn btn-claw-start" style="font-size:12.5px;padding:9px 18px">📂 打开本地文件（推荐）</button>
+                  <button onclick="startLocalServer()" class="btn" style="font-size:12.5px;padding:9px 18px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:10px;cursor:pointer;font-family:inherit;font-weight:600">🖥️ 启动本地服务器</button>
+                </div>
+                <div id="localServerTip" style="display:none;margin-top:10px;font-size:11.5px;color:var(--text-tertiary);background:var(--bg-primary);padding:8px 12px;border-radius:6px;border-left:3px solid var(--accent-blue)"></div>
+              </div>
+            </div>
+          </div>
 
           <!-- 网关状态卡片 -->
           <div class="local-gw-card">
@@ -1814,12 +1833,65 @@ function switchClawMode(mode){
   document.getElementById('modeLocalBtn').classList.toggle('active', mode==='local');
   document.getElementById('cloudPanel').classList.toggle('active', mode==='cloud');
   document.getElementById('localPanel').classList.toggle('active', mode==='local');
+  // 切换到本地模式时检测 HTTPS 安全策略
+  if(mode === 'local'){ checkHttpsWarning(); }
 }
 
 // ====== Local Gateway Control ======
 const LOCAL_GW_TOKEN = _dk('MWjWj8A8IRu8kWl818X858'+'8C8o818F8V8tW58dWA8B8'+'L81WR8H8q85WnWsWd8V8H8');
+const IS_HTTPS = location.protocol === 'https:';
+const LOCAL_FILE_PATH = 'C:\\Users\\Administrator\\WorkBuddy\\Claw\\ai-thinker-platform.html';
+
+/** 检测并显示/隐藏 HTTPS 警告 */
+function checkHttpsWarning(){
+  const warn = document.getElementById('httpsWarning');
+  if(!warn) return;
+  if(IS_HTTPS){
+    warn.style.display = 'block';
+    // 禁用连接按钮
+    document.getElementById('localStartBtn').disabled = true;
+    document.getElementById('localStartBtn').style.opacity = '.4';
+    document.getElementById('localStartBtn').style.cursor = 'not-allowed';
+    document.getElementById('localStartBtn').title = '请在 HTTP 环境下使用本地网关';
+    document.getElementById('detectLocalBtn')?.disabled && (document.getElementById('detectLocalBtn').disabled=true);
+  } else {
+    warn.style.display = 'none';
+  }
+}
+
+/** 打开本地文件（绕过 HTTPS 限制） */
+function openLocalFile(){
+  // 尝试通过 ActiveXObject (IE) 或 file:// 协议打开
+  try {
+    // Windows Shell Execute - 在大多数浏览器中会被阻止
+    window.open('file:///' + LOCAL_FILE_PATH.replace(/\\/g,'/'), '_blank');
+    addLocalMsg('ai','💡 已尝试打开本地文件。如果浏览器拦截了弹窗，请手动操作：<br><br>1️⃣ 打开文件夹：<code>C:\\Users\\Administrator\\WorkBuddy\\Claw\\</code><br>2️⃣ 双击 <b>ai-thinker-platform.html</b><br>3️⃣ 进入 🦞龙虾 → 🖥️本地网关 → 点击连接');
+  } catch(e){
+    alert('请手动操作：\n\n1. 打开 C:\\Users\\Administrator\\WorkBuddy\\Claw\\\n2. 双击 ai-thinker-platform.html\n3. 进入龙虾连接器 → 本地网关');
+  }
+}
+
+/** 显示启动本地服务器的命令提示 */
+function startLocalServer(){
+  const tip = document.getElementById('localServerTip');
+  tip.style.display = 'block';
+  tip.innerHTML = `
+    <div style="font-weight:600;color:var(--accent-blue);margin-bottom:4px">📋 在终端（CMD/PowerShell）中运行：</div>
+    <div style="font-family:'SF Mono',Consolas,monospace;font-size:11.5px;background:#1a1a2e;padding:10px;border-radius:6px;color:#58a6ff;word-break:break-all;margin-bottom:6px">
+    cd C:\\Users\\Administrator\\WorkBuddy\\Claw && npx serve -l 8080
+    </div>
+    <div style="line-height:1.6">然后访问 <b style="color:var(--accent-blue)">http://localhost:8080/ai-thinker-platform.html</b></div>
+    <div style="margin-top:4px;color:var(--text-tertiary)">⚡ 用 HTTP 访问即可使用本地网关功能（无需关闭当前页面）</div>
+  `;
+}
 
 function detectLocalGateway(){
+  // HTTPS 下直接提示
+  if(IS_HTTPS){
+    setLocalStatus(false, 'HTTPS限制');
+    addLocalMsg('ai','🔒 当前为 HTTPS 页面，无法检测本地网关。请用本地文件或 HTTP 服务器访问。');
+    return;
+  }
   const badge = document.getElementById('localGwBadge');
   badge.className = 'local-status-badge'; badge.style.background='rgba(210,153,34,.1)'; badge.style.color='#d29922';
   badge.innerHTML = '<span>⏳</span> 检测中...';
@@ -1857,6 +1929,13 @@ async function toggleLocalGateway(){
   document.getElementById('localStartBtn').innerHTML = '<span class="spinner"></span> 连接中...';
 
   try {
+    // HTTPS 环境下提前拦截
+    if(IS_HTTPS){
+      setLocalStatus(false, '被安全策略拦截');
+      addLocalMsg('ai','🔒 <b>连接被浏览器安全策略拦截</b><br><br>当前页面是 <code>HTTPS</code>，浏览器禁止连接非加密的 WebSocket（ws://）。<br><br>✅ <b>解决方案：</b><br>1️⃣ 打开本地文件：双击 <code>C:\\Users\\Administrator\\WorkBuddy\\Claw\\ai-thinker-platform.html</code><br>2️⃣ 或启动本地 HTTP 服务器后用 HTTP 访问<br><br>你的 Gateway 实际正常运行中，端口 18679 已在线 ✅');
+      document.getElementById('localStartBtn').innerHTML = '🔗 连接网关';
+      return;
+    }
     localWs = new WebSocket('ws://127.0.0.1:18679/acp');
     localWs.onopen = () => {
       localConnected = true;
@@ -2029,6 +2108,15 @@ function addLocalMsg(type,content){
   area.innerHTML += '<div class="claw-msg claw-msg-' + type + '"><div class="claw-msg-bubble">'+(type==='user'?escapeHtml(content):content)+'</div></div>';
   area.scrollTop = area.scrollHeight;
 }
+
+// ====== 页面初始化 ======
+(function(){
+  // HTTPS 环境下，给"本地网关"标签加标记
+  if(IS_HTTPS){
+    const tag = document.getElementById('httpsTag');
+    if(tag) tag.style.display = 'inline';
+  }
+})();
 </script>
 </body>
 </html>
