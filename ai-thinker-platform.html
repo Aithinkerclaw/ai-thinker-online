@@ -160,6 +160,60 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 .claw-msg-user{flex-direction:row-reverse}.claw-msg-user .claw-msg-bubble{background:var(--accent-blue);color:#fff;border-top-right-radius:4px}
 .claw-msg-ai .claw-msg-bubble{background:var(--bg-tertiary);border:1px solid var(--border-color);border-top-left-radius:4px}
 
+/* ====== Welcome Tour / Onboarding Modal ====== */
+.welcome-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:2000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.welcome-modal{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:20px;width:92%;max-width:560px;max-height:85vh;overflow-y:auto;padding:0;box-shadow:0 24px 80px rgba(0,0,0,.5);animation:welcomeIn .35s ease}
+@keyframes welcomeIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.welcome-header{text-align:center;padding:36px 28px 20px;border-bottom:1px solid var(--border-color)}
+.welcome-header .wh-icon{font-size:52px;margin-bottom:12px}
+.welcome-header .wh-title{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.welcome-header .wh-subtitle{font-size:14px;color:var(--text-secondary);margin-top:6px;line-height:1.5}
+.welcome-body{padding:20px 28px 28px}
+.welcome-step{display:none}.welcome-step.active{display:block}
+.welcome-feature{display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--bg-tertiary);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.welcome-feature:hover{border-color:var(--accent-blue);background:rgba(88,166,255,.06)}
+.welcome-feature .wf-icon{font-size:28px;flex-shrink:0;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.welcome-feature .wf-text h4{font-size:14px;font-weight:600;margin-bottom:3px}
+.welcome-feature .wf-text p{font-size:12.5px;color:var(--text-secondary);line-height:1.45}
+.welcome-tip-box{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.2);border-radius:12px;padding:16px;margin-top:12px}
+.welcome-tip-box .wt-title{font-size:13.5px;font-weight:600;color:var(--accent-green);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.welcome-tip-box ul{list-style:none;padding:0;margin:0}
+.welcome-tip-box li{font-size:13px;color:var(--text-secondary);padding:5px 0;padding-left:18px;position:relative;line-height:1.5}
+.welcome-tip-box li::before{content:'✅';position:absolute;left:0;font-size:11px}
+.welcome-faq-item{padding:12px 0;border-bottom:1px solid var(--border-color)}
+.welcome-faq-item:last-child{border-bottom:none}
+.welcome-faq-q{font-size:13.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--text-primary)}
+.welcome-faq-q::after{content:'+';color:var(--text-tertiary);font-size:16px;transition:transform .2s}
+.welcome-faq-a{font-size:13px;color:var(--text-secondary);line-height:1.65;padding-top:8px;display:none}
+.welcome-faq-item.open .welcome-faq-a{display:block}
+.welcome-faq-item.open .welcome-faq-q::after{transform:rotate(45deg)}
+.welcome-footer{display:flex;align-items:center;justify-content:space-between;padding:16px 28px 24px;border-top:1px solid var(--border-color);gap:12px}
+.welcome-dots{display:flex;gap:6px}.welcome-dot{width:8px;height:8px;border-radius:50%;background:var(--border-color);cursor:pointer;transition:all .2s}.welcome-dot.active{background:var(--accent-blue);width:24px;border-radius:4px}
+.welcome-btns{display:flex;gap:8px}
+.welcome-btn{padding:9px 22px;border-radius:8px;font-size:13.5px;cursor:pointer;font-weight:500;font-family:inherit;transition:all .15s;border:none}
+.welcome-btn-primary{background:var(--accent-blue);color:#fff}.welcome-btn-primary:hover{opacity:.88}
+.welcome-btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color)}.welcome-btn-secondary:hover:border-color:var(--text-tertiary)}
+.welcome-skip{font-size:12.5px;color:var(--text-tertiary);cursor:pointer;background:none;border:none;font-family:inherit;padding:4px 8px}.welcome-skip:hover{color:var(--text-primary)}
+
+/* ====== Help Page ====== */
+.help-container{max-width:800px}
+.help-section{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:24px;margin-bottom:16px}
+.help-section .hs-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.help-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.help-card{background:var(--bg-tertiary);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.help-card:hover{border-color:var(--accent-blue);transform:translateY(-1px)}
+.help-card .hc-icon{font-size:26px;margin-bottom:8px}
+.help-card .hc-name{font-size:13.5px;font-weight:600;margin-bottom:4px}
+.help-card .hc-desc{font-size:12px;color:var(--text-secondary);line-height:1.45}
+.help-tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.help-tag{font-size:11.5px;padding:4px 10px;border-radius:6px;background:var(--bg-tertiary);border:1px solid var(--border-color);color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.help-tag:hover,.help-tag.active{border-color:var(--accent-blue);color:var(--accent-blue);background:rgba(88,166,255,.08)}
+.help-shortcut-table{width:100%;border-collapse:collapse}
+.help-shortcut-table th{text-align:left;font-size:12px;color:var(--text-tertiary);font-weight:500;padding:8px 12px;border-bottom:1px solid var(--border-color)}
+.help-shortcut-table td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border-color)}
+.help-shortcut-table tr:last-child td{border-bottom:none}
+.help-kbd{display:inline-block;padding:2px 7px;border-radius:4px;background:var(--bg-primary);border:1px solid var(--border-color);font-size:12px;font-family:'SF Mono',Consolas,monospace;color:var(--accent-blue)}
+
 /* Mobile responsive */
 @media(max-width:768px){
   /* ===== Layout ===== */
@@ -238,6 +292,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
   .stat-card{padding:12px!important}
   .stat-value{font-size:18px!important}
   .claw-chat-section{padding:14px!important}
+
+  /* ====== Welcome Tour Mobile ====== */
+  .welcome-modal{width:96%!important;max-height:90vh!important;border-radius:16px!important}
+  .welcome-header{padding:28px 18px 16px!important}
+  .welcome-header .wh-icon{font-size:40px!important}
+  .wh-title{font-size:19px!important}
+  .welcome-body{padding:14px 18px 20px!important}
+  .welcome-feature{padding:12px!important}
+  .welcome-footer{flex-direction:column;gap:12px!important;padding:12px 18px 18px!important}
+  .welcome-btns{width:100%}.welcome-btns .welcome-btn{flex:1;text-align:center;padding:11px 0!important}
+
+  /* ====== Help Page Mobile ====== */
+  .help-section{padding:16px!important;border-radius:10px!important}
+  .help-grid{grid-template-columns:1fr!important;gap:8px!important}
+  .help-card{padding:13px!important}
 }
 
 /* Extra small phones */
@@ -283,6 +352,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
     <div class="nav-item" onclick="switchPage('sidejob')"><span class="icon">💰</span>AI副业规划</div>
     <div class="nav-item" onclick="switchPage('resume')"><span class="icon">📄</span>简历/自我介绍</div>
     <div class="nav-item" onclick="switchPage('claw')"><span class="icon">🦞</span>龙虾连接器</div>
+    <div class="nav-item" onclick="switchPage('help')"><span class="icon">❓</span>使用帮助</div>
   </nav>
 
   <div class="sidebar-bottom">
@@ -312,7 +382,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
     <div id="page-home" class="page">
       <div class="welcome-hero">
         <div class="brand-row"><img src="ai-thinker-mascot.jpg" alt="AI猩客"><span>AI猩客实验室</span></div>
-        <p>你的AI创作工作台，一站式搞定文字、图片、提示词。选一个功能开始吧。</p>
+        <p>你的AI创作工作台，一站式搞定文字、图片、提示词。选一个功能开始吧。<span style="display:inline-block;margin-left:8px;font-size:12px;color:var(--accent-blue);cursor:pointer;background:rgba(88,166,255,.1);padding:2px 10px;border-radius:10px" onclick="showWelcomeOverlay()">👈 新手？点我看引导</span></p>
       </div>
       <div class="module-grid">
         <div class="module-card" onclick="switchPage('chat')">
@@ -739,8 +809,218 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
       </div>
     </div>
 
+    <!-- HELP PAGE -->
+    <div id="page-help" class="page" style="display:none">
+      <div class="help-container">
+        <div class="welcome-hero" style="padding:24px 0 20px">
+          <div class="brand-row" style="gap:10px"><span style="font-size:22px">❓ 使用帮助中心</span></div>
+          <p>快速了解平台功能，找到你需要的答案</p>
+        </div>
+
+        <!-- 快速开始 -->
+        <div class="help-section">
+          <div class="hs-title">🚀 快速开始（推荐从这里开始）</div>
+          <div class="help-grid">
+            <div class="help-card" onclick="switchPage('chat')">
+              <div class="hc-icon">💬</div>
+              <div class="hc-name">AI对话</div>
+              <div class="hc-desc">跟AI聊天，问任何问题。最常用的功能，适合新手第一步</div>
+            </div>
+            <div class="help-card" onclick="switchPage('image')">
+              <div class="hc-icon">🎨</div>
+              <div class="hc-name">AI画图</div>
+              <div class="hc-desc">用文字描述画面，AI免费帮你画出来，无限次使用</div>
+            </div>
+            <div class="help-card" onclick="switchPage('script')">
+              <div class="hc-icon">🎬</div>
+              <div class="hc-name">视频脚本</div>
+              <div class="hc-desc">输入主题自动生成15秒短视频脚本+字幕+音效建议</div>
+            </div>
+            <div class="help-card" onclick="switchPage('article')">
+              <div class="hc-icon">📝</div>
+              <div class="hc-name">写文章</div>
+              <div class="hc-desc">一键生成800-1200字公众号推文，含标题和金句</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 全部功能一览 -->
+        <div class="help-section">
+          <div class="hs-title">📋 全部功能一览</div>
+          <div class="help-tag-row">
+            <span class="help-tag active" onclick="filterHelpCards(this,'all')">全部</span>
+            <span class="help-tag" onclick="filterHelpCards(this,'create')">创作</span>
+            <span class="help-tag" onclick="filterHelpCards(this,'tool')">工具</span>
+            <span class="help-tag" onclick="filterHelpCards(this,'advanced')">高级</span>
+          </div>
+          <div class="help-grid" id="helpAllGrid" style="margin-top:14px">
+            <div class="help-card" data-cat="create"><div class="hc-icon">💬</div><div class="hc-name">💬 AI对话</div><div class="hc-desc">直接聊天问答，支持多轮对话上下文理解</div></div>
+            <div class="help-card" data-cat="create"><div class="hc-icon">🎬</div><div class="hc-name">🎬 视频脚本</div><div class="hc-desc">15秒短视频分镜脚本+字幕+音效建议</div></div>
+            <div class="help-card" data-cat="create"><div class="hc-icon">📝</div><div class="hc-name">📝 公众号长文</div><div class="hc-desc">800-1200字推文生成，含标题备选和金句</div></div>
+            <div class="help-card" data-cat="create"><div class="hc-icon">📱</div><div class="hc-name">📱 社媒文案</div><div class="hc-desc">朋友圈/小红书/抖音文案一键生成</div></div>
+            <div class="help-card" data-cat="create"><div class="hc-icon">🎨</div><div class="hc-name">🎨 AI图片</div><div class="hc-desc">文字描述→AI绘图，免费无限使用</div></div>
+            <div class="help-card" data-cat="tool"><div class="hc-icon">🧰</div><div class="hc-name">🧰 提示词库</div><div class="hc-desc">精选提示词模板，点击复制即用</div></div>
+            <div class="help-card" data-cat="tool"><div class="hc-icon">✨</div><div class="hc-name">✨ 提示词优化</div><div class="hc-desc">粗糙提示词→专业级指令优化</div></div>
+            <div class="help-card" data-cat="tool"><div class="hc-icon">📧</div><div class="hc-name">📧 邮件润色</div><div class="hc-desc">草稿→专业商务文档一键升级</div></div>
+            <div class="help-card" data-cat="tool"><div class="hc-icon">💰</div><div class="hc-name">💰 副业规划</div><div class="hc-desc">根据你的技能定制AI副业方案</div></div>
+            <div class="help-card" data-cat="tool"><div class="hc-icon">📄</div><div class="hc-name">📄 简历生成</div><div class="hc-desc">经历→简历/自我介绍/面试话术</div></div>
+            <div class="help-card" data-cat="advanced"><div class="hc-icon">🦞</div><div class="hc-name">🦞 龙虾连接器</div><div class="hc-desc">配置AI模型网关，支持多模型切换</div></div>
+          </div>
+        </div>
+
+        <!-- 使用小贴士 -->
+        <div class="help-section">
+          <div class="hs-title">💡 新手必读</div>
+          <div class="welcome-tip-box" style="margin-top:0;background:var(--bg-tertiary);border-color:var(--border-color)">
+            <div class="wt-title" style="color:var(--accent-blue)">✨ 平台使用零门槛</div>
+            <ul>
+              <li><strong>无需注册</strong> — 打开就能直接使用所有功能</li>
+              <li><strong>无需配置密钥</strong> — API已由平台统一提供，你不用管技术细节</li>
+              <li><strong>AI画图完全免费</strong> — 图片生成功能不限次数、不收费</li>
+              <li><strong>手机也能用</strong> — 支持手机浏览器访问，响应式适配</li>
+              <li><strong>结果一键复制</strong> — 所有生成内容都可复制到剪贴板使用</li>
+            </ul>
+          </div>
+          <div class="welcome-tip-box" style="margin-top:12px">
+            <div class="wt-title">🎯 推荐使用顺序</div>
+            <ul>
+              <li>第1步：打开「💬 AI对话」随便聊几句，感受一下AI能力</li>
+              <li>第2步：去「🎨 AI图片」画一张图体验一下</li>
+              <li>第3步：根据自己的需求选择对应功能（写文案/做脚本/润色文档）</li>
+              <li>进阶：「🧰 提示词库」里有现成的模板可以参考学习</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="help-section">
+          <div class="hs-title">❓ 常见问题</div>
+          <div class="welcome-faq-item"><div class="welcome-faq-q" onclick="toggleFaq(this)">这个平台是免费的吗？</div><div class="welcome-faq-a">是的！目前平台所有功能都<strong>完全免费</strong>使用。AI对话、写作、画图等功能都不需要你付费或注册账号。AI图片生成更是无限次免费。</div></div>
+          <div class="welcome-faq-item"><div class="welcome-faq-q" onclick="toggleFaq(this)">需要自己申请API密钥吗？</div><div class="welcome-faq-a">不需要！平台的API密钥已经内置好了，你打开就能直接用。不需要注册任何第三方账号，不需要配置任何技术参数。<strong>开箱即用</strong>。</div></div>
+          <div class="welcome-faq-item"><div class="welcome-faq-q" onclick="toggleFaq(this)">什么是Token？需要关注吗？</div><div class="welcome-faq-a">Token可以理解为AI处理的"文字单位"。你不需要关心这个——平台已经统一处理了。就像你用电不需要关心用了多少千瓦时一样，<strong>正常使用即可</strong>。如果某天提示额度不足，联系管理员就行。</div></div>
+          <div class="welcome-faq-item"><div class="welcome-faq-q" onclick="toggleFaq(this)">生成的结果可以直接用吗？</div><div class="welcome-faq-a">当然！每个功能都有「复制」按钮，一键复制到剪贴板。你可以直接粘贴到微信、公众号后台、剪映等工具中使用。建议根据实际情况稍作调整，效果更好。</div></div>
+          <div class="welcome-faq-item"><div class="welcome-faq-q" onclick="toggleFaq(this)">手机上怎么用？</div><div class="welcome-faq-a">用手机浏览器（微信/Chrome/Safari都可以）打开平台链接即可。界面会自动适配手机屏幕。点击左上角 ☰ 菜单可以切换功能模块。</div></div>
+          <div class="welcome-faq-item"><div class="welcome-faq-q" onclick="toggleFaq(this)">龙虾连接器是什么？需要用吗？</div><div class="welcome-faq-a">龙虾连接器是进阶功能，普通用户暂时不需要管它。它是用来连接其他AI模型的网关工具。如果你只是想用AI对话、写文章、画图，完全不需要碰这个功能。</div></div>
+        </div>
+
+        <!-- 快捷键 -->
+        <div class="help-section">
+          <div class="hs-title">⌨️ 操作快捷键</div>
+          <table class="help-shortcut-table">
+            <thead><tr><th>操作</th><th>快捷键</th></tr></thead>
+            <tbody>
+              <tr><td>发送消息</td><td><span class="help-kbd">Enter</span></td></tr>
+              <tr><td>换行（输入框）</td><td><span class="help-kbd">Shift + Enter</span></td></tr>
+              <tr><td>返回首页</td><td>点击左侧 <span class="help-kbd">🏠</span></td></tr>
+              <tr><td>手机打开菜单</td><td>点击左上角 <span class="help-kbd">☰</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
+</div>
+
+<!-- ====== WELCOME TOUR MODAL ====== -->
+<div class="welcome-overlay" id="welcomeOverlay" style="display:none">
+  <div class="welcome-modal">
+    <!-- Step 1: 欢迎 -->
+    <div class="welcome-step active" data-step="1">
+      <div class="welcome-header">
+        <div class="wh-icon">🦍</div>
+        <div class="wh-title">欢迎来到 AI猩客实验室</div>
+        <div class="wh-subtitle">你的AI创作工作台，一站式搞定文字、图片、创意<br>30秒了解如何开始 👇</div>
+      </div>
+      <div class="welcome-body">
+        <div class="welcome-feature" onclick="goWelcomeStep(2)">
+          <div class="wf-icon" style="background:rgba(88,166,255,.12)">💬</div>
+          <div class="wf-text"><h4>我想先聊聊</h4><p>直接跟AI对话，问任何问题</p></div>
+        </div>
+        <div class="welcome-feature" onclick="goWelcomeStep(2)">
+          <div class="wf-icon" style="background:rgba(248,81,73,.12)">🎨</div>
+          <div class="wf-text"><h4>我想画画</h4><p>描述画面，AI免费帮你画</p></div>
+        </div>
+        <div class="welcome-feature" onclick="goWelcomeStep(2)">
+          <div class="wf-icon" style="background:rgba(63,185,80,.12)">📝</div>
+          <div class="wf-text"><h4>我要写东西</h4><p>文章/文案/邮件/脚本</p></div>
+        </div>
+      </div>
+      <div class="welcome-footer">
+        <button class="welcome-skip" onclick="closeWelcome()">跳过引导</button>
+        <div class="welcome-dots"><div class="welcome-dot active" onclick="goWelcomeStep(1)"></div><div class="welcome-dot" onclick="goWelcomeStep(2)"></div><div class="welcome-dot" onclick="goWelcomeStep(3)"></div></div>
+        <div class="welcome-btns"><button class="welcome-btn welcome-btn-primary" onclick="goWelcomeStep(2)">下一步 →</button></div>
+      </div>
+    </div>
+
+    <!-- Step 2: 功能介绍 -->
+    <div class="welcome-step" data-step="2">
+      <div class="welcome-header">
+        <div class="wh-icon">🧰</div>
+        <div class="wh-title">11个功能，覆盖全场景</div>
+        <div class="wh-subtitle">不管你想做什么，这里都有对应的工具</div>
+      </div>
+      <div class="welcome-body">
+        <div class="welcome-feature" onclick="closeWelcome();switchPage('chat')">
+          <div class="wf-icon" style="background:rgba(88,166,255,.12)">💬</div>
+          <div class="wf-text"><h4>AI对话</h4><p>智能问答助手，支持多轮对话</p></div>
+        </div>
+        <div class="welcome-feature" onclick="closeWelcome();switchPage('image')">
+          <div class="wf-icon" style="background:rgba(248,81,73,.12)">🎨</div>
+          <div class="wf-text"><h4>AI图片生成</h4><p>文字描述→精美图片，免费无限次</p></div>
+        </div>
+        <div class="welcome-feature" onclick="closeWelcome();switchPage('script')">
+          <div class="wf-icon" style="background:rgba(163,113,247,.12)">🎬</div>
+          <div class="wf-text"><h4>视频脚本</h4><p>15秒短视频分镜脚本自动生成</p></div>
+        </div>
+        <div class="welcome-feature" onclick="closeWelcome();switchPage('article')">
+          <div class="wf-icon" style="background:rgba(63,185,80,.12)">📝</div>
+          <div class="wf-text"><h4>公众号长文</h4><p>一键生成800字+推文</p></div>
+        </div>
+      </div>
+      <div class="welcome-footer">
+        <button class="welcome-skip" onclick="goWelcomeStep(1)">← 上一步</button>
+        <div class="welcome-dots"><div class="welcome-dot" onclick="goWelcomeStep(1)"></div><div class="welcome-dot active" onclick="goWelcomeStep(2)"></div><div class="welcome-dot" onclick="goWelcomeStep(3)"></div></div>
+        <div class="welcome-btns"><button class="welcome-btn welcome-btn-primary" onclick="goWelcomeStep(3)">下一步 →</button></div>
+      </div>
+    </div>
+
+    <!-- Step 3: 小贴士 + 完成 -->
+    <div class="welcome-step" data-step="3">
+      <div class="welcome-header">
+        <div class="wh-icon">🎯</div>
+        <div class="wh-title">准备好了吗？</div>
+        <div class="wh-subtitle">最后几个小贴士，让你事半功倍</div>
+      </div>
+      <div class="welcome-body">
+        <div class="welcome-tip-box">
+          <div class="wt-title">✅ 你不需要操心的事</div>
+          <ul>
+            <li>不用注册账号 — 打开即用</li>
+            <li>不用配置密钥 — API已内置</li>
+            <li>不用担心费用 — 当前全免费</li>
+            <li>不用安装任何软件 — 浏览器就行</li>
+          </ul>
+        </div>
+        <div class="welcome-tip-box" style="margin-top:12px">
+          <div class="wt-title">💡 高效使用技巧</div>
+          <ul>
+            <li>描述越具体，AI生成结果越精准</li>
+            <li>生成后可继续追问或要求修改</li>
+            <li>「🧰 提示词库」有现成模板可参考</li>
+            <li>遇到问题？点左侧「❓ 使用帮助」</li>
+          </ul>
+        </div>
+      </div>
+      <div class="welcome-footer">
+        <button class="welcome-skip" onclick="goWelcomeStep(2)">← 上一步</button>
+        <div class="welcome-dots"><div class="welcome-dot" onclick="goWelcomeStep(1)"></div><div class="welcome-dot" onclick="goWelcomeStep(2)"></div><div class="welcome-dot active" onclick="goWelcomeStep(3)"></div></div>
+        <div class="welcome-btns"><button class="welcome-btn welcome-btn-primary" onclick="closeWelcome();switchPage('chat')">🚀 开始使用</button></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Sidebar Overlay (outside app container) -->
@@ -759,7 +1039,7 @@ function switchPage(page) {
   const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.getAttribute('onclick').includes("'"+page+"'"));
   if(activeNav) activeNav.classList.add('active');
 
-  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色',sidejob:'💰 AI副业规划',resume:'📄 简历/自我介绍',claw:'🦞 龙虾连接器'};
+  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色',sidejob:'💰 AI副业规划',resume:'📄 简历/自我介绍',claw:'🦞 龙虾连接器',help:'❓ 使用帮助'};
   const badges = {chat:'在线',script:'15秒内',image:'free',sidejob:'热门',claw:'网关'};
   document.getElementById('pageTitle').textContent = titles[page]||'';
   document.getElementById('pageBadge').textContent = badges[page]||'';
@@ -1089,8 +1369,94 @@ function clearForm(ids){
   ids.forEach(id => document.getElementById(id).value='');
 }
 
+// ====== Welcome Tour / Onboarding ======
+let welcomeCurrentStep = 1;
+const WELCOME_STORAGE_KEY = 'ai_thinker_onboarded';
+
+function initWelcomeTour(){
+  // Check if user has seen the tour
+  try {
+    if(localStorage.getItem(WELCOME_STORAGE_KEY) !== 'done'){
+      setTimeout(()=>{ showWelcomeOverlay(); }, 600);
+    }
+  } catch(e){ /* localStorage not available, skip */ }
+}
+
+function showWelcomeOverlay(){
+  const overlay = document.getElementById('welcomeOverlay');
+  if(overlay){
+    overlay.style.display='flex';
+    goWelcomeStep(1);
+  }
+}
+
+function goWelcomeStep(n){
+  welcomeCurrentStep = n;
+  document.querySelectorAll('.welcome-step').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector('.welcome-step[data-step="'+n+'"]');
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.welcome-dot').forEach((d,i) => {
+    d.classList.toggle('active', i+1 === n);
+  });
+}
+
+function closeWelcome(){
+  const overlay = document.getElementById('welcomeOverlay');
+  if(overlay) overlay.style.display='none';
+  try { localStorage.setItem(WELCOME_STORAGE_KEY, 'done'); } catch(e){}
+}
+
+// ====== Help Page Functions ======
+function toggleFaq(el){
+  el.parentElement.classList.toggle('open');
+}
+
+function filterHelpCards(tagEl, cat){
+  // Update active tag
+  document.querySelectorAll('.help-tag').forEach(t => t.classList.remove('active'));
+  if(tagEl) tagEl.classList.add('active');
+  // Filter cards
+  document.querySelectorAll('#helpAllGrid .help-card').forEach(card => {
+    if(cat==='all' || card.dataset.cat===cat){
+      card.style.display='';
+    } else {
+      card.style.display='none';
+    }
+  });
+}
+
+// ====== Enhanced Module Placeholders (新手提示语) ======
+const MODULE_HINTS = {
+  chat: '试试问：帮我写一个15秒短视频脚本，主题是AI副业',
+  script: '例：AI如何帮助普通人月入过万 | 例：为什么说2026年必须学会AI',
+  article: '例：为什么说2026年是普通人入局AI的最后窗口期 | 例：AI时代职场人的生存法则',
+  social: '例：我们公司新上了一款AI工具，想在小红书做推广 | 例：周末去了一家很棒的咖啡店',
+  image: '例：一只穿着蓝色太空服的大猩猩，戴着护目镜，站在赛博朋克城市前',
+  optInput: '把你的原始提示词粘贴到这里...\n例：帮我写个文章\n→ 优化后变成专业的结构化指令',
+  emailDraft: '例：张总您好，关于上周的项目进度汇报如下：完成了A和B模块的开发...',
+  sidejobSkills: '例：我是一名市场运营，会写文案、做PPT、熟悉数据分析，有2年经验',
+  resumeInfo: '例：毕业3年，现任市场运营。负责公众号运营涨粉10万，策划过3场线下活动...'
+};
+
+// Auto-fill hints on page load
+function applyModuleHints(){
+  Object.keys(MODULE_HINTS).forEach(id => {
+    const el = document.getElementById(id);
+    if(el && !el.value && el.placeholder){
+      // Keep original placeholder but enhance it with hint example
+      const original = el.placeholder;
+      if(!original.includes('例：') && !original.includes('试试')){
+        el.placeholder = MODULE_HINTS[id];
+        el.setAttribute('data-hint-enhanced','1');
+      }
+    }
+  });
+}
+
 // ====== Init ======
 renderPrompts();
+applyModuleHints();
+initWelcomeTour();
 
 // Show/hide menu button based on screen size
 function checkMobile(){
