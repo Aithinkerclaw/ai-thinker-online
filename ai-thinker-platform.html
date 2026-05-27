@@ -126,6 +126,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 .sidebar-overlay.show{visibility:visible;pointer-events:auto;opacity:1}
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+/* Claw Connector Page */
+.claw-container{max-width:780px}
+.claw-status-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:24px;margin-bottom:20px}
+.claw-status-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.claw-big-icon{font-size:36px;width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(210,153,34,.2),rgba(248,81,73,.15));display:flex;align-items:center;justify-content:center}
+.claw-status-title{font-size:18px;font-weight:700}
+.claw-status-subtitle{font-size:12.5px;color:var(--text-secondary);margin-top:3px}
+.claw-status-dot{width:12px;height:12px;border-radius:50%;background:var(--text-tertiary);flex-shrink:0;transition:background .3s}
+.claw-status-dot.connected{background:var(--accent-green);box-shadow:0 0 10px rgba(63,185,80,.5)}
+.claw-status-dot.connecting{background:var(--accent-orange);box-shadow:0 0 10px rgba(210,153,34,.5);animation:pulse 1s infinite}
+.claw-config-section{padding:16px 0;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);margin-bottom:16px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.claw-actions{display:flex;gap:12px}
+.btn-claw-start{flex:1;padding:13px 28px;font-size:15px;font-weight:600;background:linear-gradient(135deg,#d29922,#f85149);color:#fff;border:none;border-radius:10px;cursor:pointer;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-claw-start:hover{opacity:.9;transform:scale(.98)}
+.btn-claw-start.connected{background:linear-gradient(135deg,var(--accent-green),#238636)}
+.btn-claw-test{padding:13px 24px;font-size:14px;font-weight:600;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:10px;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-claw-test:hover:not(:disabled){border-color:var(--accent-blue);color:var(--accent-blue)}
+.btn-claw-test:disabled{opacity:.4;cursor:not-allowed}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* Stats */
+.claw-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:16px;text-align:center}
+.stat-value{font-size:22px;font-weight:700;color:var(--accent-blue)}
+.stat-label{font-size:11.5px;color:var(--text-tertiary);margin-top:4px}
+/* Test chat */
+.claw-chat-section{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:20px}
+.claw-chat-area{min-height:160px;max-height:300px;overflow-y:auto;padding:12px 0;border-radius:8px}
+.claw-placeholder-text{color:var(--text-tertiary);font-size:13px;text-align:center;padding:60px 0}
+.claw-msg{margin-bottom:12px;display:flex;gap:10px}
+.claw-msg-bubble{padding:10px 14px;border-radius:10px;font-size:13.5px;line-height:1.6;max-width:80%}
+.claw-msg-user{flex-direction:row-reverse}.claw-msg-user .claw-msg-bubble{background:var(--accent-blue);color:#fff;border-top-right-radius:4px}
+.claw-msg-ai .claw-msg-bubble{background:var(--bg-tertiary);border:1px solid var(--border-color);border-top-left-radius:4px}
+
 /* Mobile responsive */
 @media(max-width:768px){
   /* ===== Layout ===== */
@@ -191,6 +225,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
 
   /* ===== Sidebar bottom cards - hide on small screen ===== */
   .sidebar-bottom{display:none}
+
+  /* ===== Claw Connector Mobile ===== */
+  .claw-status-card{padding:16px!important;border-radius:10px!important}
+  .claw-big-icon{width:44px;height:44px;font-size:28px!important}
+  .claw-status-title{font-size:15px!important}
+  .form-row-2{grid-template-columns:1fr!important;gap:0!important}
+  .claw-actions{flex-direction:column;gap:8px!important}
+  .btn-claw-start{padding:12px 20px!important;font-size:14px!important;width:100%}
+  .btn-claw-test{padding:12px 20px!important;font-size:14px!important;width:100%}
+  .claw-stats-row{grid-template-columns:repeat(2,1fr)!important;gap:8px!important}
+  .stat-card{padding:12px!important}
+  .stat-value{font-size:18px!important}
+  .claw-chat-section{padding:14px!important}
 }
 
 /* Extra small phones */
@@ -235,8 +282,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
     <div class="nav-item" onclick="switchPage('email')"><span class="icon">📧</span>邮件/汇报润色</div>
     <div class="nav-item" onclick="switchPage('sidejob')"><span class="icon">💰</span>AI副业规划</div>
     <div class="nav-item" onclick="switchPage('resume')"><span class="icon">📄</span>简历/自我介绍</div>
+    <div class="nav-item" onclick="switchPage('claw')"><span class="icon">🦞</span>龙虾连接器</div>
   </nav>
-  
+
   <div class="sidebar-bottom">
     <div class="claw-card" style="margin-bottom:8px">
       <div class="claw-avatar">🦞</div>
@@ -319,6 +367,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
           <div class="m-icon" style="background:rgba(248,81,73,.12)">📄</div>
           <div class="m-title">简历/自我介绍</div>
           <div class="m-desc">输入经历，AI生成专业简历、自我介绍、面试回答话术</div>
+        </div>
+        <div class="module-card" onclick="switchPage('claw')">
+          <div class="m-icon" style="background:rgba(210,153,34,.15)">🦞</div>
+          <div class="m-title">龙虾连接器</div>
+          <div class="m-desc">配置AI模型网关，一键连接OpenClaw，支持多模型切换和推理模式</div>
+          <div class="m-tag">网关</div>
         </div>
       </div>
     </div>
@@ -603,6 +657,88 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Noto Sans SC,sans-s
       </div>
     </div>
 
+    <!-- CLAW CONNECTOR PAGE -->
+    <div id="page-claw" class="page" style="display:none">
+      <div class="claw-container">
+        <!-- 状态卡片 -->
+        <div class="claw-status-card">
+          <div class="claw-status-header">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="claw-big-icon">🦞</div>
+              <div>
+                <div class="claw-status-title">AI猩客 · 龙虾连接器</div>
+                <div class="claw-status-subtitle" id="clawStatusText">未连接 — 点击下方按钮启动</div>
+              </div>
+            </div>
+            <div class="claw-status-dot" id="clawStatusDot"></div>
+          </div>
+
+          <!-- 连接配置区 -->
+          <div class="claw-config-section">
+            <div class="form-group">
+              <label class="form-label">🔗 API 接口地址</label>
+              <input class="form-input" id="clawApiUrl" value="https://api.openclawai.ac.cn/v1" placeholder="https://api.openclawai.ac.cn/v1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">🔑 API 密钥</label>
+              <div style="position:relative">
+                <input class="form-input" id="clawApiKey" type="password" value="sk-4LUmJPoGS36cxEbdbcpOeDV6Dl2oLbaSsuO6eVhugKb9MaDe" placeholder="输入你的API密钥" style="padding-right:44px">
+                <button onclick="toggleKeyVisibility()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:16px;padding:4px" id="keyToggleBtn">👁️</button>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">🤖 选择模型</label>
+                <select class="form-select" id="clawModel">
+                  <option value="Qwen/Qwen3.5-9B">Qwen 3.5 9B（推荐）</option>
+                  <option value="GLM-4.7">GLM 4.7</option>
+                  <option value="deepseek-chat">DeepSeek Chat</option>
+                  <option value="Qwen/Qwen2.5-72B">Qwen 2.5 72B</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">⚡ 推理模式</label>
+                <select class="form-select" id="clawReasoning">
+                  <option value="false">标准模式（快速）</option>
+                  <option value="true">推理模式（深度思考）</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="claw-actions">
+            <button class="btn btn-claw-start" id="clawStartBtn" onclick="toggleClawConnection()">
+              <span id="clawBtnIcon">▶️</span> 启动连接
+            </button>
+            <button class="btn btn-claw-test" id="clawTestBtn" onclick="testClawConnection()" disabled>🧪 测试连接</button>
+          </div>
+        </div>
+
+        <!-- 调用统计 -->
+        <div class="claw-stats-row">
+          <div class="stat-card"><div class="stat-value" id="statRequests">0</div><div class="stat-label">请求次数</div></div>
+          <div class="stat-card"><div class="stat-value" id="statTokens">0</div><div class="stat-label">Token用量</div></div>
+          <div class="stat-card"><div class="stat-value" id="statLatency">--ms</div><div class="stat-label">响应延迟</div></div>
+          <div class="stat-card"><div class="stat-value" id="statStatus" style="color:var(--text-tertiary)">离线</div><div class="stat-label">网关状态</div></div>
+        </div>
+
+        <!-- 测试对话区 -->
+        <div class="claw-chat-section">
+          <div style="font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px">💬 测试对话</div>
+          <div id="clawChatArea" class="claw-chat-area">
+            <div class="claw-placeholder-text">连接成功后，在这里输入问题测试API是否正常工作...</div>
+          </div>
+          <div class="chat-input-area" style="padding:12px 0;border-top:none">
+            <div class="input-wrap">
+              <input class="chat-input" id="clawTestInput" placeholder="输入测试问题，例：你好，请介绍一下自己" onkeydown="if(event.key==='Enter')sendClawTestMessage()" disabled id="clawInputField">
+              <button class="chat-send" onclick="sendClawTestMessage()" id="clawSendBtn" disabled>发送</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 </div>
@@ -623,8 +759,8 @@ function switchPage(page) {
   const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.getAttribute('onclick').includes("'"+page+"'"));
   if(activeNav) activeNav.classList.add('active');
 
-  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色',sidejob:'💰 AI副业规划',resume:'📄 简历/自我介绍'};
-  const badges = {chat:'在线',script:'15秒内',image:'free',sidejob:'热门'};
+  const titles = {home:'首页概览',chat:'💬 AI对话',script:'🎬 视频脚本生成',article:'📝 公众号/长文',social:'📱 社媒文案',image:'🎨 AI图片生成',prompts:'🧰 提示词库',optimizer:'✨ 提示词优化',email:'📧 邮件/汇报润色',sidejob:'💰 AI副业规划',resume:'📄 简历/自我介绍',claw:'🦞 龙虾连接器'};
+  const badges = {chat:'在线',script:'15秒内',image:'free',sidejob:'热门',claw:'网关'};
   document.getElementById('pageTitle').textContent = titles[page]||'';
   document.getElementById('pageBadge').textContent = badges[page]||'';
 
@@ -963,6 +1099,200 @@ function checkMobile(){
 }
 window.addEventListener('resize', checkMobile);
 checkMobile();
+
+
+// ====== 龙虾连接器 (OpenClaw Connector) ======
+let clawConnected = false;
+let clawStats = {requests:0, tokens:0, latency:0};
+
+function toggleKeyVisibility(){
+  const input = document.getElementById('clawApiKey');
+  const btn = document.getElementById('keyToggleBtn');
+  if(input.type === 'password'){
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁️';
+  }
+}
+
+async function toggleClawConnection(){
+  if(clawConnected){
+    // 断开连接
+    clawConnected = false;
+    updateClawUI(false);
+    return;
+  }
+  
+  // 启动连接
+  const apiUrl = document.getElementById('clawApiUrl').value.trim();
+  const apiKey = document.getElementById('clawApiKey').value.trim();
+  if(!apiUrl || !apiKey){alert('请填写API地址和密钥');return;}
+  
+  updateClawUI(null); // connecting状态
+  
+  // 测试连接
+  try {
+    const startTime = Date.now();
+    const testUrl = apiUrl.replace(/\/v1$/,'') || apiUrl;
+    const fullUrl = (testUrl.endsWith('/v1') ? testUrl : testUrl + '/v1') + '/chat/completions';
+    
+    const res = await fetch(fullUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({
+        model:document.getElementById('clawModel').value,
+        messages:[{role:'user',content:'hello'}],
+        max_tokens:5,
+        stream:false
+      })
+    });
+    
+    const latency = Date.now() - startTime;
+    
+    if(res.ok){
+      clawConnected = true;
+      clawStats.latency = latency;
+      updateClawUI(true);
+      // 在测试对话区显示连接成功
+      addClawMsg('ai', '🦞 连接成功！API响应正常，延迟 '+latency+'ms。现在可以在下方输入问题进行测试。');
+    } else {
+      const errText = await res.text().catch(()=>'未知错误');
+      throw new Error(`HTTP ${res.status}: ${errText.substring(0,100)}`);
+    }
+  } catch(e) {
+    alert('连接失败：'+e.message);
+    updateClawUI(false);
+  }
+}
+
+async function testClawConnection(){
+  await toggleClawConnection();
+}
+
+function updateClawUI(state){
+  const dot = document.getElementById('clawStatusDot');
+  const text = document.getElementById('clawStatusText');
+  const btn = document.getElementById('clawStartBtn');
+  const testBtn = document.getElementById('clawTestBtn');
+  const inputField = document.getElementById('clawInputField');
+  const sendBtn = document.getElementById('clawSendBtn');
+  const statStatus = document.getElementById('statStatus');
+  const chatArea = document.getElementById('clawChatArea');
+  
+  if(state === null){
+    // 连接中
+    dot.className = 'claw-status-dot connecting';
+    text.textContent = '正在连接...';
+    btn.innerHTML = '<span class="spinner"></span> 连接中';
+    btn.disabled = true;
+  } else if(state === true){
+    // 已连接
+    dot.className = 'claw-status-dot connected';
+    text.textContent = '已连接 · 模型：'+document.getElementById('clawModel').value.split('/').pop() + ' · 就绪';
+    btn.innerHTML = '<span>⏹️</span> 断开连接';
+    btn.className = 'btn btn-claw-start connected';
+    btn.disabled = false;
+    testBtn.disabled = false;
+    inputField.disabled = false;
+    sendBtn.disabled = false;
+    statStatus.textContent = '在线';
+    statStatus.style.color = 'var(--accent-green)';
+    chatArea.innerHTML = '';
+  } else {
+    // 未连接
+    dot.className = 'claw-status-dot';
+    text.textContent = '未连接 — 点击下方按钮启动';
+    btn.innerHTML = '<span>▶️</span> 启动连接';
+    btn.className = 'btn btn-claw-start';
+    btn.disabled = false;
+    testBtn.disabled = true;
+    inputField.disabled = true;
+    sendBtn.disabled = true;
+    statStatus.textContent = '离线';
+    statStatus.style.color = 'var(--text-tertiary)';
+  }
+}
+
+function addClawMsg(type, content){
+  const area = document.getElementById('clawChatArea');
+  if(area.querySelector('.claw-placeholder-text')){
+    area.innerHTML = '';
+  }
+  const div = document.createElement('div');
+  div.className = 'claw-msg claw-msg-'+type;
+  div.innerHTML = '<div class="claw-msg-bubble">'+(type==='user'?escapeHtml(content):formatResponse(content))+'</div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+async function sendClawTestMessage(){
+  if(!clawConnected){alert('请先启动连接');return;}
+  const input = document.getElementById('clawTestInput');
+  const msg = input.value.trim();
+  if(!msg)return;
+  input.value='';
+  
+  addClawMsg('user', msg);
+  
+  // 加载动画
+  const loadingId = 'claw-loading-'+Date.now();
+  const area = document.getElementById('clawChatArea');
+  area.innerHTML += '<div class="claw-msg claw-msg-ai" id="'+loadingId+'"><div class="claw-msg-bubble"><div class="output-loading"><span class="spinner"></span>思考中...</div></div></div>';
+  area.scrollTop = area.scrollHeight;
+  
+  try {
+    const startTime = Date.now();
+    const apiUrl = document.getElementById('clawApiUrl').value.trim();
+    const apiKey = document.getElementById('clawApiKey').value.trim();
+    const model = document.getElementById('clawModel').value;
+    const reasoning = document.getElementById('clawReasoning').value === 'true';
+    const testUrl = apiUrl.replace(/\/v1$/,'') || apiUrl;
+    const fullUrl = (testUrl.endsWith('/v1') ? testUrl : testUrl + '/v1') + '/chat/completions';
+    
+    const body = {
+      model:model,
+      messages:[{role:'user',content:msg}],
+      max_tokens:2048,
+      stream:false
+    };
+    if(reasoning){
+      // reasoning mode - add thinking parameters if supported
+      // body.extra_body = {reasoning: {effort: 'high'}};
+    }
+    
+    const res = await fetch(fullUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify(body)
+    });
+    
+    const latency = Date.now() - startTime;
+    
+    if(res.ok){
+      const data = await res.json();
+      const reply = data.choices[0].message.content;
+      
+      // Update stats
+      clawStats.requests++;
+      clawStats.tokens += data.usage ? (data.usage.total_tokens||0) : 0;
+      clawStats.latency = latency;
+      document.getElementById('statRequests').textContent = clawStats.requests;
+      document.getElementById('statTokens').textContent = clawStats.tokens > 1000 ? Math.round(clawStats.tokens/1000)+'K' : clawStats.tokens;
+      document.getElementById('statLatency').textContent = latency+'ms';
+      
+      // Replace loading
+      const el = document.getElementById(loadingId);
+      if(el) el.querySelector('.claw-msg-bubble').innerHTML = formatResponse(reply);
+    } else {
+      throw new Error('HTTP '+res.status);
+    }
+  } catch(e) {
+    const el = document.getElementById(loadingId);
+    if(el) el.querySelector('.claw-msg-bubble').innerHTML = '<span style="color:var(--accent-red)">请求失败：'+e.message+'</span>';
+  }
+}
 </script>
 </body>
 </html>
